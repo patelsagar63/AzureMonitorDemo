@@ -5,13 +5,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+  <title>Azure AMPLs Setup Guide</title>
 </head>
 
 <body>
-  <main>
-    <h1>Vanilla JavaScript App</h1>
-  </main>
+  <body>
+    <h1>Azure Setup Guide</h1>
+    <h2>Pre-Setup</h2>
+    <ul>
+        <li>Create .NET Web App: <a href="https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore" target="_blank">Quickstart: Deploy an ASP.NET web app</a></li>
+        <li>Create Log Analytics workspace: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace" target="_blank">Create Log Analytics workspaces</a></li>
+        <li>Create Application Insights component: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/create-workspace-resource" target="_blank">Create a new Azure Monitor Application Insights workspace-based resource</a></li>
+        <li>Enable Application Insights: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-web-apps-net-core" target="_blank">Enable application monitoring in Azure App Service</a></li>
+    </ul>
+
+    <h2>Acronyms</h2>
+    <ul>
+        <li><strong>VNET</strong>: Virtual Network</li>
+        <li><strong>AMPLs</strong>: Azure Monitor Private Link Scope</li>
+        <li><strong>PE</strong>: Private Endpoint</li>
+    </ul>
+
+    <h2>Setup Scenarios</h2>
+    <h3>Different VNET for Web App Outbound Traffic</h3>
+    <ul>
+        <li>Create VNET for Web App Outbound traffic.</li>
+        <li>Enable VNet Integration in the Web App's outbound traffic configuration.</li>
+        <li>Create VNET for AMPLs and PE.</li>
+        <li>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. Refer to <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">this guide</a>.</li>
+        <li>Add Virtual Network Link in AMPLs -> PE -> Private DNS Zone for the Web App Outbound traffic VNET.</li>
+        <li>Create VNET Peering between the Web App Outbound traffic VNET and the VNET configured with AMPLs and PE.</li>
+        <li>Test the Private Link Connection.</li>
+    </ul>
+
+    <h3>Same VNET for Web App Outbound Traffic</h3>
+    <ul>
+        <li>Create VNET with two subnets:
+            <ul>
+                <li>One for Web App Outbound traffic.</li>
+                <li>One for AMPLs and PE.</li>
+            </ul>
+        </li>
+        <li>Enable VNet Integration in the Web App's outbound traffic configuration.</li>
+        <li>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. Refer to <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">this guide</a>.</li>
+        <li>Test the Private Link Connection.</li>
+    </ul>
+
+    <h2>Additional References</h2>
+    <ul>
+        <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview" target="_blank">Application Insights Overview</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/virtual-network/quick-create-portal" target="_blank">Create a Virtual Network</a></li>
+    </ul>
+
+    <h2>Limitation</h2>
+    <p>An AMPLS object can connect to a maximum of 300 Log Analytics workspaces and 1,000 Application Insights components as per the <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">service limits</a>.</p>
+</body>
 </body>
 
 </html>
