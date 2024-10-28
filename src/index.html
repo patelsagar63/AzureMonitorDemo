@@ -10,13 +10,13 @@
 
 <body>
   <body>
-    <h1>Azure Setup Guide</h1>
+    <h1>Azure AMPLs Setup Guide</h1>
     <h2>Pre-Setup</h2>
     <ul>
         <li>Create .NET Web App: <a href="https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore" target="_blank">Quickstart: Deploy an ASP.NET web app</a></li>
         <li>Create Log Analytics workspace: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace" target="_blank">Create Log Analytics workspaces</a></li>
-        <li>Create Application Insights component: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/create-workspace-resource" target="_blank">Create a new Azure Monitor Application Insights workspace-based resource</a></li>
-        <li>Enable Application Insights: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-web-apps-net-core" target="_blank">Enable application monitoring in Azure App Service</a></li>
+        <li>Create Application Insights component(workspace-based): <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/create-workspace-resource" target="_blank">Create a new Azure Monitor Application Insights workspace-based resource</a></li>
+        <li>Enable application insights using auto instrumentation from the portal to monitor .NET Web App: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-web-apps-net-core" target="_blank">Enable application monitoring in Azure App Service</a></li>
     </ul>
 
     <h2>Acronyms</h2>
@@ -27,7 +27,7 @@
     </ul>
 
     <h2>Setup Scenarios</h2>
-    <h3>Different VNET for Web App Outbound Traffic</h3>
+    <h3>-> If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
     <ul>
         <li>Create VNET for Web App Outbound traffic.</li>
         <li>Enable VNet Integration in the Web App's outbound traffic configuration.</li>
@@ -38,12 +38,12 @@
         <li>Test the Private Link Connection.</li>
     </ul>
 
-    <h3>Same VNET for Web App Outbound Traffic</h3>
+    <h3>-> If requirement is to connect Web App Outbound traffic from VNET which is same VNET configured for AMPLs configured PE. </h3>
     <ul>
         <li>Create VNET with two subnets:
             <ul>
                 <li>One for Web App Outbound traffic.</li>
-                <li>One for AMPLs and PE.</li>
+                <li>Second for AMPLs->PE.</li>
             </ul>
         </li>
         <li>Enable VNet Integration in the Web App's outbound traffic configuration.</li>
