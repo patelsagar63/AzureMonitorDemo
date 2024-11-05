@@ -29,19 +29,19 @@
     <h2><u>Setup Scenarios</u></h2>
     <h3>If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
     <ul>
-        <li><a href="1-1.html" target="_blank">Create VNET for Web App Outbound traffic.</a></li>
-        <li><a href="1-2.html" target="_blank">Enable VNet Integration in the Web App's outbound traffic configuration.</a></li>
-        <li><a href="1-3.html" target="_blank">Create VNET for AMPLs and PE. (Please select default Subnet IP address range which do not overlapped with VNET for Web App Outbound traffic created previously.)</a></li>
-        <li><a href="1-4.html" target="_blank">Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. </a></li>
-        <li><a href="1-5.html" target="_blank">Add Virtual Network Link in AMPLs -> PE -> Private DNS Zone for the Web App Outbound traffic VNET.</a></li>
-        <li><a href="1-6.html" target="_blank">Create VNET Peering between the Web App Outbound traffic VNET and the VNET configured with AMPLs and PE.</a></li>
-        <li><a href="1-7.html" target="_blank">Test the Private Link Connection.</a></li>
+        <li><a href="1-1.html">Create VNET for Web App Outbound traffic.</a></li>
+        <li><a href="1-2.html">Enable VNet Integration in the Web App's outbound traffic configuration.</a></li>
+        <li><a href="1-3.html">Create VNET for AMPLs and PE. (Please select default Subnet IP address range which do not overlapped with VNET for Web App Outbound traffic created previously.)</a></li>
+        <li><a href="1-4.html">Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. </a></li>
+        <li><a href="1-5.html">Add Virtual Network Link in AMPLs -> PE -> Private DNS Zone for the Web App Outbound traffic VNET.</a></li>
+        <li><a href="1-6.html">Create VNET Peering between the Web App Outbound traffic VNET and the VNET configured with AMPLs and PE.</a></li>
+        <li><a href="1-7.html">Test the Private Link Connection.</a></li>
     </ul>
 
     <h3>If requirement is to connect Web App Outbound traffic from VNET which is same VNET configured for AMPLs configured PE. </h3>
     <ul>
         <li>Create VNET with two subnets:
-            <ul>
+            <ul style="list-style-type:disc;">
                 <li>One for Web App Outbound traffic.</li>
                 <li>Second for AMPLs->PE.</li>
             </ul>
