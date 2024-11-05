@@ -11,7 +11,7 @@
 <body>
   <body>
     <h1>Azure AMPLs Setup Guide for Ingesting data to Application Insights through private network.</h1>
-    <h2>Pre-Setup</h2>
+    <h2><u>Pre-Setup</u></h2>
     <ul>
         <li>Create .NET Web App: <a href="https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore" target="_blank">Quickstart: Deploy an ASP.NET web app</a></li>
         <li>Create Log Analytics workspace: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace" target="_blank">Create Log Analytics workspaces</a></li>
@@ -19,26 +19,26 @@
         <li>Enable application insights using auto instrumentation from the portal to monitor .NET Web App: <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-web-apps-net-core" target="_blank">Enable application monitoring in Azure App Service</a></li>
     </ul>
 
-    <h2>Acronyms</h2>
+    <h2><u>Acronyms</u></h2>
     <ul>
         <li><strong>VNET</strong>: Virtual Network</li>
         <li><strong>AMPLs</strong>: Azure Monitor Private Link Scope</li>
         <li><strong>PE</strong>: Private Endpoint</li>
     </ul>
 
-    <h2>Setup Scenarios</h2>
-    <h3>-> If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
+    <h2><u>Setup Scenarios</u></h2>
+    <h3>If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
     <ul>
         <li><a href="1-1.html" target="_blank">Create VNET for Web App Outbound traffic.</a></li>
         <li><a href="1-2.html" target="_blank">Enable VNet Integration in the Web App's outbound traffic configuration.</a></li>
         <li><a href="1-3.html" target="_blank"></a>Create VNET for AMPLs and PE. (Please select default Subnet IP address range which do not overlapped with VNET for Web App Outbound traffic created previously.)</a></li>
-        <li><a href="1-4.html" target="_blank"></a>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. </a>.</li>
+        <li><a href="1-4.html" target="_blank"></a>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. </a></li>
         <li><a href="1-5.html" target="_blank"></a>Add Virtual Network Link in AMPLs -> PE -> Private DNS Zone for the Web App Outbound traffic VNET.</a></li>
         <li><a href="1-6.html" target="_blank"></a>Create VNET Peering between the Web App Outbound traffic VNET and the VNET configured with AMPLs and PE.</a></li>
         <li><a href="1-7.html" target="_blank"></a>Test the Private Link Connection.</a></li>
     </ul>
 
-    <h3>-> If requirement is to connect Web App Outbound traffic from VNET which is same VNET configured for AMPLs configured PE. </h3>
+    <h3>If requirement is to connect Web App Outbound traffic from VNET which is same VNET configured for AMPLs configured PE. </h3>
     <ul>
         <li>Create VNET with two subnets:
             <ul>
@@ -47,18 +47,18 @@
             </ul>
         </li>
         <li>Enable VNet Integration in the Web App's outbound traffic configuration.</li>
-        <li>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. Refer to <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">this guide</a>.</li>
+        <li>Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs.</li>
         <li>Test the Private Link Connection.</li>
     </ul>
 
-    <h2>Additional References</h2>
+    <h2><u>Additional References</u></h2>
     <ul>
         <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview" target="_blank">Application Insights Overview</a></li>
         <li><a href="https://learn.microsoft.com/en-us/azure/virtual-network/quick-create-portal" target="_blank">Create a Virtual Network</a></li>
-        <li> Refer to <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">this guide</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs</a></li>
     </ul>
 
-    <h2>Limitation</h2>
+    <h2><u>Limitation</u></h2>
     <p>An AMPLS object can connect to a maximum of 300 Log Analytics workspaces and 1,000 Application Insights components as per the <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">service limits</a>.</p>
 </body>
 </body>
