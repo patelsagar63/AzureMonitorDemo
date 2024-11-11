@@ -27,11 +27,11 @@
     </ul>
 
     <h2><u>Setup Scenarios</u></h2>
-    <h3>If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
-    <ul>
+    <h3>Hub and Spoke Networks - If requirement is to connect Web App Outbound traffic from VNET which is different than VNET configured for AMPLs configured PE.</h3>
+    <ul><li><img src="/Images/Hub-Spoke AMPLs.png" alt="Hub-Spoke-AMPLs"></img></li>
         <li><a href="1-1.html">Create VNET for Web App Outbound traffic.</a></li>
         <li><a href="1-2.html">Enable VNet Integration in the Web App's outbound traffic configuration.</a></li>
-        <li><a href="1-3.html">Create VNET for AMPLs and PE. (Please select default Subnet IP address range which do not overlapped with VNET for Web App Outbound traffic created previously.)</a></li>
+        <li><a href="1-3.html">Create VNET for AMPLs and PE. </a></li>
         <li><a href="1-4.html">Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs. </a></li>
         <li><a href="1-5.html">Add Virtual Network Link in AMPLs -> PE -> Private DNS Zone for the Web App Outbound traffic VNET.</a></li>
         <li><a href="1-6.html">Create VNET Peering between the Web App Outbound traffic VNET and the VNET configured with AMPLs and PE.</a></li>
@@ -55,6 +55,7 @@
     <ul>
         <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview" target="_blank">Application Insights Overview</a></li>
         <li><a href="https://learn.microsoft.com/en-us/azure/virtual-network/quick-create-portal" target="_blank">Create a Virtual Network</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-design#hub-and-spoke-networks" target="_blank">Hub and Spoke Private Link Design </a></li>
         <li><a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security" target="_blank">Configure AMPLs and PE: Add the monitored Application Insights component in AMPLs</a></li>
     </ul>
 
