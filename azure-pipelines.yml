@@ -13,7 +13,6 @@ jobs:
   displayName: 'Build and Deploy Job'
   pool:
     vmImage: 'ubuntu-latest'
-  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), and(eq(variables['Build.Reason'], 'PullRequest'), ne(variables['System.PullRequest.IsDraft'], 'true')))
   steps:
   - task: AzureStaticWebApp@0
     inputs:
@@ -28,7 +27,6 @@ jobs:
   displayName: 'Close Pull Request Job'
   pool:
     vmImage: 'ubuntu-latest'
-  condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['System.PullRequest.IsDraft'], 'true'))
   steps:
   - task: AzureStaticWebApp@0
     inputs:
