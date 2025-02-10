@@ -23,12 +23,12 @@ jobs:
       repo_token: $(GITHUB_TOKEN)
       action: 'upload'
 
-- job: ClosePullRequest
-  displayName: 'Close Pull Request Job'
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: AzureStaticWebApp@0
-    inputs:
-      azure_static_web_apps_api_token: $(deployment_token)
-      action: 'close'
+# - job: ClosePullRequest
+#   displayName: 'Close Pull Request Job'
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - task: AzureStaticWebApp@0
+#     inputs:
+#       azure_static_web_apps_api_token: $(deployment_token)
+#       action: 'close'
