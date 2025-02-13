@@ -32,8 +32,8 @@ jobs:
 #     inputs:
 #       azure_static_web_apps_api_token: $(deployment_token)
 #       action: 'close'
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: '$(Pipeline.Workspace)'
-      artifact: 'Demo'
-      publishLocation: 'pipeline'
+  # - task: PublishPipelineArtifact@1
+  #   inputs:
+  #     targetPath: '$(Pipeline.Workspace)'
+  #     artifact: 'Demo'
+  #     publishLocation: 'pipeline'
