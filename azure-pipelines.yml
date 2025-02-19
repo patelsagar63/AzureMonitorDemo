@@ -22,7 +22,10 @@ jobs:
       azure_static_web_apps_api_token: $(deployment_token)
       repo_token: $(GITHUB_TOKEN)
       action: 'upload'
-
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo 'Hello world'
 # - job: ClosePullRequest
 #   displayName: 'Close Pull Request Job'
 #   pool:
