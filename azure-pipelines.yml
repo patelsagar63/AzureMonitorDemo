@@ -14,14 +14,14 @@ jobs:
   pool:
     name: 'Self-hosted' 
   steps:
-  - task: AzureStaticWebApp@0
-    inputs:
-      app_location: '/src'
-      api_location: 'api'
-      output_location: '/src'
-      azure_static_web_apps_api_token: $(deployment_token)
-      repo_token: $(GITHUB_TOKEN)
-      action: 'upload'
+  # - task: AzureStaticWebApp@0
+  #   inputs:
+  #     app_location: '/src'
+  #     api_location: 'api'
+  #     output_location: '/src'
+  #     azure_static_web_apps_api_token: $(deployment_token)
+  #     repo_token: $(GITHUB_TOKEN)
+  #     action: 'upload'
   - task: CmdLine@2
     inputs:
       script: |
