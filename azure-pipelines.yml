@@ -25,6 +25,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
+        set PATH=C:\Windows\system32;%PATH%
         echo 'Hello world'
 # - job: ClosePullRequest
 #   displayName: 'Close Pull Request Job'
