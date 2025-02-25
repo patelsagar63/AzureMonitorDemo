@@ -1,4 +1,5 @@
 trigger:
+  batch: true
   branches:
     include:
       - main
@@ -27,7 +28,6 @@ stages:
         repo_token: $(GITHUB_TOKEN)
         action: 'upload'
 - stage: ExecuteCommands
-  lockBehavior: sequential
   dependsOn: BuildandDeployStage
   jobs:
   - job: ExecuteCommands
