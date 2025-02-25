@@ -12,7 +12,7 @@ pr:
 pool:
   name: 'Azure Pipelines'
 
-lockBehavior: sequential
+#lockBehavior: sequential
 stages:
 - stage: BuildandDeployStage
   jobs:
@@ -28,7 +28,8 @@ stages:
         repo_token: $(GITHUB_TOKEN)
         action: 'upload'
 - stage: ExecuteCommands
-  #dependsOn: BuildandDeployStage
+  lockBehavior: sequential
+  dependsOn: BuildandDeployStage
   jobs:
   - job: ExecuteCommands
     displayName: 'Execute Commands'
