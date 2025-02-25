@@ -15,6 +15,7 @@ pool:
 
 stages:
 - stage: BuildandDeployStage
+  lockBehavior: sequential
   jobs:
   - job: BuildAndDeploy
     displayName: 'Build and Deploy Job'
@@ -29,6 +30,7 @@ stages:
         action: 'upload'
 - stage: ExecuteCommands
   dependsOn: BuildandDeployStage
+  lockBehavior: sequential
   jobs:
   - job: ExecuteCommands
     displayName: 'Execute Commands'
