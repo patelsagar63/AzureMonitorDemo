@@ -8,6 +8,8 @@ pr:
     include:
       - main
 
+lockBehavior: sequential
+
 jobs:
 - job: BuildAndDeploy
   displayName: 'Build and Deploy Job'
