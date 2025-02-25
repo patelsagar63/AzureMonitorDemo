@@ -12,7 +12,7 @@ jobs:
 - job: BuildAndDeploy
   displayName: 'Build and Deploy Job'
   pool:
-    name: 'Self-hosted'
+    name: 'Azure Pipelines'
   steps:
   - task: AzureStaticWebApp@0
     inputs:
