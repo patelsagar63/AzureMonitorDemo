@@ -10,25 +10,33 @@ pr:
 
 lockBehavior: sequential
 
-jobs:
-- job: BuildAndDeploy
-  displayName: 'Build and Deploy Job'
-  pool:
-    name: 'Azure Pipelines'
-  steps:
-  - task: AzureStaticWebApp@0
-    inputs:
-      app_location: '/src'
-      api_location: 'api'
-      output_location: '/src'
-      azure_static_web_apps_api_token: $(deployment_token)
-      repo_token: $(GITHUB_TOKEN)
-      action: 'upload'
-  # - task: CmdLine@2
-  #   inputs:
-  #     script: |
-  #       //echo 'Hi'
-  #       echo 'Hello world'
+pool:
+  name: 'Azure Pipelines'
+
+stages:
+- stage: BuildandDeployStage
+  jobs:
+  - job: BuildAndDeploy
+    displayName: 'Build and Deploy Job'
+    steps:
+    - task: AzureStaticWebApp@0
+      inputs:
+        app_location: '/src'
+        api_location: 'api'
+        output_location: '/src'
+        azure_static_web_apps_api_token: $(deployment_token)
+        repo_token: $(GITHUB_TOKEN)
+        action: 'upload'
+- stage: ExecuteCommands
+  dependsOn: BuildandDeployStage
+  jobs:
+  - job: ExecuteCommands
+    displayName: 'Execute Commands'
+    steps:
+    - task: CmdLine@2
+      inputs:
+        script: 'echo "Hello"'
+  
 # - job: ClosePullRequest
 #   displayName: 'Close Pull Request Job'
 #   pool:
