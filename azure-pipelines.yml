@@ -11,7 +11,7 @@ pr:
 pool:
   name: 'Azure Pipelines'
 
-lockBehavior: runLatest
+lockBehavior: sequential
 stages:
 - stage: BuildandDeployStage
   jobs:
