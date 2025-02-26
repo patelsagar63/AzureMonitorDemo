@@ -1,8 +1,8 @@
-trigger:
+trigger: none
   #batch: true
-  branches:
-    include:
-      - main
+  # branches:
+  #   include:
+  #     - main
 
 pr:
   branches:
