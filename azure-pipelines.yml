@@ -12,11 +12,14 @@ pr:
 pool:
   name: 'Azure Pipelines'
 
+lockBehavior: sequential
 stages:
 - stage: BuildandDeployStage
   jobs:
   - job: BuildAndDeploy
     displayName: 'Build and Deploy Job'
+    strategy:
+      parallel: 0
     steps:
     # - task: AzureStaticWebApp@0
     #   inputs:
@@ -34,6 +37,8 @@ stages:
   jobs:
   - job: ExecuteCommands
     displayName: 'Execute Commands'
+    strategy:
+      parallel: 0
     steps:
     - task: CmdLine@2
       inputs:
