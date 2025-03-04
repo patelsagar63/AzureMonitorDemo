@@ -32,7 +32,7 @@ stages:
       inputs:
         notifyUsers: 'sagpatel@microsoft.com'
         approvers: 'sagpatel@microsoft.com'
-        #allowApproversToApproveTheirOwnRuns: true
+        allowApproversToApproveTheirOwnRuns: true
     # - task: CmdLine@2
     #   inputs:
     #     script: 'echo "BuildandDeploy"'
