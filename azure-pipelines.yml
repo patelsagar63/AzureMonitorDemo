@@ -18,7 +18,7 @@ stages:
   jobs:
   - job: BuildAndDeploy
     displayName: 'Build and Deploy Job'
-    pool: server
+    #pool: server
     steps:
     # - task: AzureStaticWebApp@0
     #   inputs:
@@ -28,14 +28,14 @@ stages:
     #     azure_static_web_apps_api_token: $(deployment_token)
     #     repo_token: $(GITHUB_TOKEN)
     #     action: 'upload'
-    - task: ManualValidation@1
-      inputs:
-        notifyUsers: 'sagpatel@microsoft.com'
-        approvers: 'sagpatel@microsoft.com'
-        allowApproversToApproveTheirOwnRuns: true
-    # - task: CmdLine@2
+    # - task: ManualValidation@1
     #   inputs:
-    #     script: 'echo "BuildandDeploy"'
+    #     notifyUsers: 'sagpatel@microsoft.com'
+    #     approvers: 'sagpatel@microsoft.com'
+    #     allowApproversToApproveTheirOwnRuns: true
+    - task: CmdLine@2
+      inputs:
+        script: 'echo "BuildandDeploy"'
 - stage: ExecuteCommands
   dependsOn: BuildandDeployStage
   jobs:
