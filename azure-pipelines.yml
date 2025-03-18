@@ -10,7 +10,7 @@ pr:
       - main
 
 pool:
-  name: 'ADO-AgentPool-VMSS'
+  vmImage: 'ubuntu-latest'
 
 lockBehavior: sequential
 stages:
