@@ -14,12 +14,12 @@ pool:
 
 lockBehavior: sequential
 stages:
-- stage: BuildandDeployStage
-  jobs:
-  - job: BuildAndDeploy
-    displayName: 'Build and Deploy Job'
+# - stage: BuildandDeployStage
+#   jobs:
+#   - job: BuildAndDeploy
+#     displayName: 'Build and Deploy Job'
     #pool: server
-    steps:
+    #steps:
     # - task: AzureStaticWebApp@0
     #   inputs:
     #     app_location: '/src'
@@ -33,25 +33,28 @@ stages:
     #     notifyUsers: 'sagpatel@microsoft.com'
     #     approvers: 'sagpatel@microsoft.com'
     #     allowApproversToApproveTheirOwnRuns: true
-    - task: CmdLine@2
-      inputs:
-        script: 'echo "BuildandDeploy"'
-- stage: ExecuteCommands
-  dependsOn: BuildandDeployStage
-  jobs:
-  - job: ExecuteCommands
-    displayName: 'Execute Commands'
-    strategy:
-      parallel: 0
-    steps:
-    - task: CmdLine@2
-      inputs:
-        script: 'echo "Hello"'
-    - task: SendEmail@2
-      inputs:
-        To: 'sagpatel@microsoft.com'
-        Subject: 'Pipeline File'
-        Body: 'The file has been uploaded. You can download it from the following link: https://your-storage-account.blob.core.windows.net/your-container/your-blob-prefix/yourfile.zip'
+    # - task: CmdLine@2
+    #   inputs:
+    #     script: 'echo "BuildandDeploy"'
+  #- stage: ExecuteCommands
+    # dependsOn: BuildandDeployStage
+    #jobs:
+    # - job: ExecuteCommands
+    #   displayName: 'Execute Commands'
+    #   strategy:
+    #     parallel: 0
+    - stage: SendEmail
+      jobs:
+       - job: BuildAndDeploy
+         steps:
+          - task: CmdLine@2
+            inputs:
+              script: 'echo "Hello"'
+          - task: SendEmail@2
+            inputs:
+              To: 'sagpatel@microsoft.com'
+              Subject: 'Pipeline File'
+              Body: 'The file has been uploaded. You can download it from the following link: https://your-storage-account.blob.core.windows.net/your-container/your-blob-prefix/yourfile.zip'
 
   
 
