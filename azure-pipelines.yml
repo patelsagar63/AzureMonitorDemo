@@ -10,7 +10,7 @@ pr:
       - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 lockBehavior: sequential
 stages:
@@ -47,7 +47,7 @@ stages:
     - task: CmdLine@2
       inputs:
         script: 'echo "Hello"'
-    - task: SendEmail@1
+    - task: SendEmail@2
       inputs:
         To: 'sagpatel@microsoft.com'
         Subject: 'Pipeline File'
