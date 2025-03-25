@@ -53,6 +53,7 @@ stages:
           - task: SendEmail@1
             inputs:              
               To: 'sagpatel@microsoft.com'
+              From: 'sagpatel@microsoft.com'
               Subject: 'Pipeline File'
               Body: 'The file has been uploaded. You can download it from the following link: https://your-storage-account.blob.core.windows.net/your-container/your-blob-prefix/yourfile.zip'
 
