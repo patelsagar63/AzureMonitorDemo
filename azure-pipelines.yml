@@ -10,9 +10,9 @@ pr:
       - main
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
-lockBehavior: sequential
+#lockBehavior: sequential
 stages:
 # - stage: BuildandDeployStage
 #   jobs:
@@ -45,18 +45,17 @@ stages:
     #     parallel: 0
     - stage: SendEmail
       jobs:
-       - job: BuildAndDeploy
+       - job: SendEmail
          steps:
-          - task: CmdLine@2
-            inputs:
-              script: 'echo "Hello"'
           - task: Bash@3
             inputs:
               targetType: 'inline'
               script: |
                 # Send an email with the file attached
                 echo "The file has been generated and stored on the self-hosted agent. Please find the attached file." | mail -s "Pipeline File" -a /path/to/self-hosted-agent/directory/yourfile_part_* sagpatel@microsoft.com
-
+          # - task: CmdLine@2
+          #   inputs:
+          #     script: 'echo "Hello"'
           # - task: SendEmail@1
           #   inputs:              
           #     To: 'sagpatel@microsoft.com'
