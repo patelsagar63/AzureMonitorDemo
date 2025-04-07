@@ -10,7 +10,8 @@ pr:
       - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmName: 'Self-hosted'
+  #vmImage: 'ubuntu-latest'
 
 #lockBehavior: sequential
 stages:
