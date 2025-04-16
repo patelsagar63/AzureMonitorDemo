@@ -14,7 +14,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 #lockBehavior: sequential
-stages:
+#stages:
 # - stage: BuildandDeployStage
 #   jobs:
 #   - job: BuildAndDeploy
@@ -44,16 +44,16 @@ stages:
     #   displayName: 'Execute Commands'
     #   strategy:
     #     parallel: 0
-    - stage: SendEmail
-      jobs:
-       - job: SendEmail
-         steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                # Send an email with the file attached
-                echo "The file has been generated and stored on the self-hosted agent. Please find the attached file." | mail -s "Pipeline File" -a /path/to/self-hosted-agent/directory/yourfile_part_* sagpatel@microsoft.com
+    # - stage: SendEmail
+    #   jobs:
+    #    - job: SendEmail
+    #      steps:
+    #       - task: Bash@3
+    #         inputs:
+    #           targetType: 'inline'
+    #           script: |
+    #             # Send an email with the file attached
+    #             echo "The file has been generated and stored on the self-hosted agent. Please find the attached file." | mail -s "Pipeline File" -a /path/to/self-hosted-agent/directory/yourfile_part_* sagpatel@microsoft.com
           # - task: CmdLine@2
           #   inputs:
           #     script: 'echo "Hello"'
@@ -80,3 +80,7 @@ stages:
   #     targetPath: '$(Pipeline.Workspace)'
   #     artifact: 'Demo'
   #     publishLocation: 'pipeline'
+jobs:
+- job: A
+  steps:
+  - bash: echo "A"
