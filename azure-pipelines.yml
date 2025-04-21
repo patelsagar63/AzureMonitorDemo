@@ -9,7 +9,14 @@
 #     name: ocp-cluster-observability
 trigger: none
 #name: $(Build.DefinitionName)_$(semVersion)$(Rev:.r)
-
+parameters:
+- name: validateVarsOnly
+  type: boolean
+  default: false
+- name: multiParallelEnv
+  type: boolean
+  default: true
+  
 pool:
     vmImage: ubuntu-latest
 
