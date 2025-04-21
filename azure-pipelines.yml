@@ -7,7 +7,9 @@
 #     path: $(Build.SourcesDirectory)
 #     type: git
 #     name: ocp-cluster-observability
-trigger: none
+#trigger: none
+trigger:
+  enabled: false
 #name: $(Build.DefinitionName)_$(semVersion)$(Rev:.r)
 parameters:
 - name: validateVarsOnly
