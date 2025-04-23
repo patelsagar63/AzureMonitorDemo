@@ -5,11 +5,6 @@ trigger: none
   #   include:
   #     - main
 
-pr:
-  branches:
-    include:
-      - main
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -80,7 +75,21 @@ pool:
   #     targetPath: '$(Pipeline.Workspace)'
   #     artifact: 'Demo'
   #     publishLocation: 'pipeline'
-jobs:
-- job: A
-  steps:
-  - bash: echo "A"
+# jobs:
+# - job: A
+#   steps:
+#   - bash: echo "A"
+steps:
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'MCAPS-Support-REQ-73994-2024-SagarPatel (7f57655a-cc45-499d-bcc5-673c62b0f89f)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    addSpnToEnvironment: true
+    inlineScript: |
+      subscription_id=$(az account list --query "[?isDefault].id"|jq -r '.[0]')
+      echo "##vso[task.setvariable variable=ARM_CLIENT_ID]"
+      echo "##vso[task.setvariable variable=ARM_TENANT_ID]"
+      echo "##vso[task.setvariable variable=ARM_USE_MSI]"
+      echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$subscription_id"
