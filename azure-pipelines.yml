@@ -103,7 +103,7 @@ steps:
         useGlobalConfig: true
         #workingDirectory: 'infrastructure/resourcegroup/soda-shared-services/databricks/metastore-uc-deployment'
         inlineScript: |
-          az login --identity --client-id b4627c70-194a-4ce1-96ab-0df5654a5788
+          az login --identity --client-id "b4627c70-194a-4ce1-96ab-0df5654a5788"
           echo "##vso[task.setvariable variable=ARM_CLIENT_ID]b4627c70-194a-4ce1-96ab-0df5654a5788"
           echo "##vso[task.setvariable variable=ARM_TENANT_ID]16b3c013-d300-468d-ac64-7eda0820b6d3"
           echo "##vso[task.setvariable variable=ARM_USE_MSI]true"
