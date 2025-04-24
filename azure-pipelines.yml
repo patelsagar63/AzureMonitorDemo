@@ -98,7 +98,7 @@ steps:
       displayName: 'Set Environment Variables and import metastore'
       inputs:
         azureSubscription: 'customer-test'
-        scriptType: 'batch'
+        scriptType: 'bash'
         scriptLocation: 'inlineScript'
         useGlobalConfig: true
         #workingDirectory: 'infrastructure/resourcegroup/soda-shared-services/databricks/metastore-uc-deployment'
