@@ -106,8 +106,4 @@ steps:
           az login --identity 
           az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
           $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
-
-
-          terraform init
-          #terraform init -input=false -backend-config="resource_group_name=Soda-Shared-Services-DEV" -backend-config="storage_account_name=sodasharedsvcsadev" -backend-config="container_name=terraform" -backend-config="key=metastore.tfstate"
-          #terraform import -var-file=terraform.dev.tfvars module.adb-lakehouse-uc-metastore.databricks_metastore.databricks-metastore "87aa736a-b79e-4f94-8f8a-16b9297dcf9f"
+          curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
