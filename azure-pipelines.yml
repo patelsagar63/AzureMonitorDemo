@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-22.04'
 
 #lockBehavior: sequential
 #stages:
@@ -107,8 +107,10 @@ steps:
           subscription_id=$(az account list --query "[?isDefault].id"|jq -r '.[0]')
           tenant_id=$(az account list --query "[?isDefault].tenantId"|jq -r '.[0]')
 
-          echo "##vso[task.setvariable variable=ARM_CLIENT_ID]XXXXXXXXX--XXXXXXX"
+          echo "##vso[task.setvariable variable=ARM_CLIENT_ID]1ebd0980-6a1f-4e35-9a33-99bf276685a0"
           echo "##vso[task.setvariable variable=ARM_TENANT_ID]${tenant_id}"
-
+          echo "##vso[task.setvariable variable=ARM_USE_MSI]true"
+          echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]${subscription_id}"
+          terraform
           #terraform init -input=false -backend-config="resource_group_name=Soda-Shared-Services-DEV" -backend-config="storage_account_name=sodasharedsvcsadev" -backend-config="container_name=terraform" -backend-config="key=metastore.tfstate"
           #terraform import -var-file=terraform.dev.tfvars module.adb-lakehouse-uc-metastore.databricks_metastore.databricks-metastore "87aa736a-b79e-4f94-8f8a-16b9297dcf9f"
