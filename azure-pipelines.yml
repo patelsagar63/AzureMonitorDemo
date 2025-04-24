@@ -93,13 +93,7 @@ pool:
 #       echo "##vso[task.setvariable variable=ARM_TENANT_ID]16b3c013-d300-468d-ac64-7eda0820b6d3"
 #       echo "##vso[task.setvariable variable=ARM_USE_MSI]"
 #       echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$subscription_id"
-stages:
-- stage: Test
-  displayName: "Test"
-  jobs:
-  - job: Test
-    steps:
-
+steps:
     - task: AzureCLI@2
       displayName: 'Set Environment Variables and import metastore'
       inputs:
