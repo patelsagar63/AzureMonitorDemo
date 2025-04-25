@@ -94,16 +94,29 @@ pool:
 #       echo "##vso[task.setvariable variable=ARM_USE_MSI]"
 #       echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$subscription_id"
 steps:
-    - task: AzureCLI@2
-      displayName: 'Set Environment Variables and import metastore'
-      inputs:
-        azureSubscription: 'Cx-Test'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        useGlobalConfig: true
-        #workingDirectory: 'infrastructure/resourcegroup/soda-shared-services/databricks/metastore-uc-deployment'
-        inlineScript: |
-          az login --identity 
-          az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
-          $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
-          curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
+    # - task: AzureCLI@2
+    #   displayName: 'Set Environment Variables and import metastore'
+    #   inputs:
+    #     azureSubscription: 'Cx-Test'
+    #     scriptType: 'bash'
+    #     scriptLocation: 'inlineScript'
+    #     useGlobalConfig: true
+    #     #workingDirectory: 'infrastructure/resourcegroup/soda-shared-services/databricks/metastore-uc-deployment'
+    #     inlineScript: |
+    #       export ARM_USE_MSI=true
+    #       export ARM_SUBSCRIPTION_ID=7f57655a-cc45-499d-bcc5-673c62b0f89f
+    #       export ARM_TENANT_ID=72f988bf-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    #       az login --identity 
+    #       az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
+    #       $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
+    #       curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
+          - task: CmdLine@2
+            inputs:
+              script: |
+                export ARM_USE_MSI=true
+                          export ARM_SUBSCRIPTION_ID=7f57655a-cc45-499d-bcc5-673c62b0f89f
+                          export ARM_TENANT_ID=16b3c013-d300-468d-ac64-7eda0820b6d3
+                          az login --identity 
+                          az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
+                          $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
+                          curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
