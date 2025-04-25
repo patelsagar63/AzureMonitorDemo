@@ -131,6 +131,7 @@ steps:
       # Create the Terraform configuration file
       echo 'provider "azurerm" {
         subscription_id = "7f57655a-cc45-499d-bcc5-673c62b0f89f"
+        resource_provider_registrations = "none"
         features {}
       }
 
