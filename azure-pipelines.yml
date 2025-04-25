@@ -113,10 +113,11 @@ steps:
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'uamanagedidentity'
-        scriptType: 'batch'
+        scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          terrafrom 
+          terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
+ 
      
           # - task: CmdLine@2
           #   inputs:
