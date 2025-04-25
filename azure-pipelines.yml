@@ -116,7 +116,7 @@ steps:
         scriptType: 'batch'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          terrafrom import 
+          terrafrom 
      
           # - task: CmdLine@2
           #   inputs:
