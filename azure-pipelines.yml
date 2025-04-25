@@ -110,16 +110,7 @@ steps:
     #       az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
     #       $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
     #       curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
-    - task: AzureCLI@2
-      inputs:
-        azureSubscription: 'uamanagedidentity'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-         cd /home/vsts/work/1/s
-         terraform init
-         terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
-
+    
           # - task: CmdLine@2
           #   inputs:
           #     script: |
@@ -130,3 +121,53 @@ steps:
           #                 az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
           #                 $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
           #                 curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'uamanagedidentity'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Create the Terraform configuration file
+      echo 'provider "azurerm" {
+        features {}
+      }
+
+      resource "azurerm_resource_group" "example" {
+        name     = "AzureMonitorDemo"
+        location = "East US"
+      }
+
+      resource "azurerm_virtual_machine_scale_set" "example" {
+        name                = "Cx-Test"
+        location            = azurerm_resource_group.example.location
+        resource_group_name = azurerm_resource_group.example.name
+        sku {
+          name     = "Standard_DS1_v2"
+          tier     = "Standard"
+          capacity = 2
+        }
+        upgrade_policy_mode = "Manual"
+        os_profile {
+          computer_name_prefix = "vmss"
+          admin_username       = "adminuser"
+          admin_password       = "Password1234!"
+        }
+        network_profile {
+          name    = "example-network-profile"
+          primary = true
+          ip_configuration {
+            name      = "example-ip-config"
+            subnet_id = "/subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Network/virtualNetworks/example-vnet/subnets/default"
+          }
+        }
+      }' > /home/vsts/work/1/s/main.tf
+      
+      # Change to the directory with the configuration files
+      cd /home/vsts/work/1/s
+      
+      # Initialize Terraform
+      terraform init
+      
+      # Import the VMSS
+      terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
