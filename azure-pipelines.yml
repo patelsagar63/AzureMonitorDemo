@@ -110,13 +110,21 @@ steps:
     #       az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
     #       $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
     #       curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
-          - task: CmdLine@2
-            inputs:
-              script: |
-                export ARM_USE_MSI=true
-                          export ARM_SUBSCRIPTION_ID=7f57655a-cc45-499d-bcc5-673c62b0f89f
-                          export ARM_TENANT_ID=16b3c013-d300-468d-ac64-7eda0820b6d3
-                          az login --identity 
-                          az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
-                          $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
-                          curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'uamanagedidentity'
+        scriptType: 'batch'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          terrafrom import 
+     
+          # - task: CmdLine@2
+          #   inputs:
+          #     script: |
+          #       export ARM_USE_MSI=true
+          #                 export ARM_SUBSCRIPTION_ID=7f57655a-cc45-499d-bcc5-673c62b0f89f
+          #                 export ARM_TENANT_ID=16b3c013-d300-468d-ac64-7eda0820b6d3
+          #                 az login --identity 
+          #                 az account set -s "7f57655a-cc45-499d-bcc5-673c62b0f89f"
+          #                 $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
+          #                 curl -s -H 'Accept:application/json' -H 'Authorization:Bearer $accessToken' https://dev.azure.com/sagpatel0597/_apis/projects
