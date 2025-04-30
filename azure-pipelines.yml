@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  vmImage: 'Cx-Test'
+  name: 'Cx-Test'
 
 #lockBehavior: sequential
 #stages:
