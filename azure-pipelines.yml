@@ -173,3 +173,18 @@ steps:
       
       # Import the VMSS
       terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
+
+- task: Bash@3
+  displayName: Capture TCP dump from VMSS instance
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Capturing TCP dump from this VMSS instance..."
+      sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host adb-2845170968234247.7.azuredatabricks.net" \
+      -w $(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap
+      echo "TCP dump completed and saved as vmss_to_databricks.pcap"
+- task: PublishBuildArtifacts@1
+  displayName: Upload TCP dump as artifact
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap'
+    ArtifactName: 'TcpDumpLogs'
