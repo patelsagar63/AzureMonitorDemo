@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  vmImage: 'ubuntu-22.04'
+  vmImage: 'Cx-Test'
 
 #lockBehavior: sequential
 #stages:
@@ -180,7 +180,7 @@ steps:
     targetType: 'inline'
     script: |
       echo "Capturing TCP dump from this VMSS instance..."
-      timeout 50 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host adb-2845170968234247.7.azuredatabricks.net" \
+      timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
       -w $(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap
       echo "TCP dump completed and saved as vmss_to_databricks.pcap"
 - task: PublishBuildArtifacts@1
