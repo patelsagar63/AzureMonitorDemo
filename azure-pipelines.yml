@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  vmImage: :'Azure Pipelines'
+  vmImage: 'Azure Pipelines'
   environment: 'Approval'
 
 
