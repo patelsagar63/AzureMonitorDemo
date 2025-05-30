@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  vmImage: 'Azure Pipelines'
+  name: Cx-Test-VMSS
   environment: 'Approval'
 
 
