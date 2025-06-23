@@ -6,7 +6,7 @@ trigger: none
   #     - main
 
 pool:
-  name: Cx-Test-VMSS
+  vmImage: windows-latest
   #environment: 'Approval'
 
 
