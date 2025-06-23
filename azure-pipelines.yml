@@ -7,14 +7,14 @@ trigger: none
 
 pool:
   name: Cx-Test-VMSS
-  environment: 'Approval'
+  #environment: 'Approval'
 
 
-steps:
-  - script: |
-      #!/bin/bash
-      echo "Building the Docker image from Azure DevOps Repo..."
-    displayName: 'Deploy to ECS'
+# steps:
+#   - script: |
+#       #!/bin/bash
+#       echo "Building the Docker image from Azure DevOps Repo..."
+#     displayName: 'Deploy to ECS'
         
 
 #lockBehavior: sequential
@@ -181,18 +181,18 @@ steps:
       
 #       # Import the VMSS
 #       terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
-
-# - task: Bash@3
-#   displayName: Capture TCP dump from VMSS instance
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       echo "Capturing TCP dump from this VMSS instance..."
-#       timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
-#       -w $(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap
-#       echo "TCP dump completed and saved as vmss_to_databricks.pcap"
-# - task: PublishBuildArtifacts@1
-#   displayName: Upload TCP dump as artifact
-#   inputs:
-#     PathtoPublish: '$(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap'
-#     ArtifactName: 'TcpDumpLogs'
+steps:
+- task: Bash@3
+  displayName: Capture TCP dump from VMSS instance
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Capturing TCP dump from this VMSS instance..."
+      timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
+      -w $(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap
+      echo "TCP dump completed and saved as vmss_to_databricks.pcap"
+- task: PublishBuildArtifacts@1
+  displayName: Upload TCP dump as artifact
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap'
+    ArtifactName: 'TcpDumpLogs'
