@@ -210,8 +210,7 @@ steps:
       # netsh trace stop
       # Write-Host "TCP dump completed and saved as $outputPath"
       Write-Host "Starting TCP dump in background using netsh trace..."
-      $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-      $tracePath = "$(System.DefaultWorkingDirectory)\\vmss_to_databricks_$timestamp.etl"
+      $tracePath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks.etl"
       $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
       Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
       Write-Host "Trace started in background. It will continue running independently."
@@ -231,7 +230,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Upload TCP dump as artifact
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\vmss_to_databricks.etl'
     ArtifactName: 'TcpDumpLogs'
 
 
