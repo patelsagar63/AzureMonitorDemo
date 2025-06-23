@@ -194,7 +194,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Upload TCP dump as artifact
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\vmss_to_databricks.pcap'
     ArtifactName: 'TcpDumpLogs'
 
 # - task: PowerShell@2
