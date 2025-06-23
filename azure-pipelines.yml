@@ -189,12 +189,12 @@ steps:
     script: |
       echo "Capturing TCP dump from this VMSS instance..."
       timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
-      -w $(System.DefaultWorkingDirectory)/vmss_to_databricks.pcap
+      -w vmss_to_databricks.pcap
       echo "TCP dump completed and saved as vmss_to_databricks.pcap"
 - task: PublishBuildArtifacts@1
   displayName: Upload TCP dump as artifact
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\vmss_to_databricks.pcap'
+    PathtoPublish: 'vmss_to_databricks.pcap'
     ArtifactName: 'TcpDumpLogs'
 
 # - task: PowerShell@2
