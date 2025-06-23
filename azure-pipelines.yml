@@ -182,36 +182,36 @@ pool:
 #       # Import the VMSS
 #       terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
 steps:
-- task: Bash@3
-  displayName: Capture TCP dump from VMSS instance
-  inputs:
-    targetType: 'inline'
-    script: |
-      echo "Capturing TCP dump from this VMSS instance..."
-      timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
-      -w vmss_to_databricks.pcap
-      echo "TCP dump completed and saved as vmss_to_databricks.pcap"
-- task: PublishBuildArtifacts@1
-  displayName: Upload TCP dump as artifact
-  inputs:
-    PathtoPublish: 'vmss_to_databricks.pcap'
-    ArtifactName: 'TcpDumpLogs'
-
-# - task: PowerShell@2
+# - task: Bash@3
 #   displayName: Capture TCP dump from VMSS instance
 #   inputs:
 #     targetType: 'inline'
 #     script: |
-#       Write-Host "Capturing TCP dump from this VMSS instance..."
-#       $timestamp = Get-Date -Format "yyyyMMddHHmmss"
-#       $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
-#       netsh trace start capture=yes tracefile=$outputPath maxSize=512
-#       Start-Sleep -Seconds 300
-#       netsh trace stop
-#       Write-Host "TCP dump completed and saved as $outputPath"
-
+#       echo "Capturing TCP dump from this VMSS instance..."
+#       timeout 300 sudo tcpdump -i any -nn "src $(hostname -I | awk '{print $1}') and dst host contoso.com" \
+#       -w vmss_to_databricks.pcap
+#       echo "TCP dump completed and saved as vmss_to_databricks.pcap"
 # - task: PublishBuildArtifacts@1
 #   displayName: Upload TCP dump as artifact
 #   inputs:
-#     PathtoPublish: '$(System.DefaultWorkingDirectory)'
+#     PathtoPublish: 'vmss_to_databricks.pcap'
 #     ArtifactName: 'TcpDumpLogs'
+
+- task: PowerShell@2
+  displayName: Capture TCP dump from VMSS instance
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Capturing TCP dump from this VMSS instance..."
+      $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+      $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
+      netsh trace start capture=yes tracefile=$outputPath maxSize=512
+      Start-Sleep -Seconds 300
+      netsh trace stop
+      Write-Host "TCP dump completed and saved as $outputPath"
+
+- task: PublishBuildArtifacts@1
+  displayName: Upload TCP dump as artifact
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+    ArtifactName: 'TcpDumpLogs'
