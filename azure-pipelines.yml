@@ -202,16 +202,37 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      Write-Host "Capturing TCP dump from this VMSS instance..."
-      $timestamp = Get-Date -Format "yyyyMMddHHmmss"
-      $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
-      netsh trace start capture=yes tracefile=$outputPath maxSize=512
-      Start-Sleep -Seconds 300
+      # Write-Host "Capturing TCP dump from this VMSS instance..."
+      # $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+      # $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
+      # netsh trace start capture=yes tracefile=$outputPath maxSize=512
+      # Start-Sleep -Seconds 300
+      # netsh trace stop
+      # Write-Host "TCP dump completed and saved as $outputPath"
+      Write-Host "Starting TCP dump in background using netsh trace..."
+      $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+      $tracePath = "$(System.DefaultWorkingDirectory)\\vmss_to_databricks_$timestamp.etl"
+      $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
+      Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
+      Write-Host "Trace started in background. It will continue running independently."
+
+- task: PowerShell@2
+  displayName: Stop TCP dump after Application/SQL deployment task
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Waiting for 5 minutes before stopping trace..."
+      Start-Sleep -Seconds 5
+      Write-Host "Stopping TCP dump..."
       netsh trace stop
-      Write-Host "TCP dump completed and saved as $outputPath"
+      Write-Host "Trace stopped."
+
 
 - task: PublishBuildArtifacts@1
   displayName: Upload TCP dump as artifact
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)'
     ArtifactName: 'TcpDumpLogs'
+
+
+
