@@ -214,6 +214,13 @@ steps:
       $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
       Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
       Write-Host "Trace started in background. It will continue running independently."
+- task: PowerShell@2
+  displayName: Hello World
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Hello World"
+      
 
 - task: PowerShell@2
   displayName: Stop TCP dump after Application/SQL deployment task
