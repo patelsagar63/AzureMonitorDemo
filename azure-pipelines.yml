@@ -222,7 +222,7 @@ steps:
     targetType: 'inline'
     script: |
       Write-Host "Hello World"
-      Start-Sleep -Seconds 22
+      Start-Sleep -Minutes 22
        echo "Starting DACPAC deployment..."
       sqlpackage /Action:Publish \
         /AccessToken:$sql_token \
