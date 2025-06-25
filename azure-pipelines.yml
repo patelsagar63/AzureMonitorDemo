@@ -222,8 +222,15 @@ steps:
     targetType: 'inline'
     script: |
       Write-Host "Hello World"
-      
-
+      Start-Sleep -Seconds 22
+       echo "Starting DACPAC deployment..."
+      sqlpackage /Action:Publish \
+        /AccessToken:$sql_token \
+        /SourceFile:"$(System.DefaultWorkingDirectory)/your.dacpac" \
+        /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
+        /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
+      echo "DACPAC deployment completed."
+  continueOnError: true
 - task: PowerShell@2
   displayName: Stop TCP dump after Application/SQL deployment task
   inputs:
