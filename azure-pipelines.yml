@@ -229,7 +229,7 @@ steps:
         /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
         /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
       echo "DACPAC deployment completed."
-      Start-Sleep -Seconds 100
+      Start-Sleep -Seconds 1300
   continueOnError: true
 - task: PowerShell@2
   displayName: Stop TCP dump after Application/SQL deployment task
