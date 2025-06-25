@@ -222,7 +222,6 @@ steps:
     targetType: 'inline'
     script: |
       Write-Host "Hello World"
-      Start-Sleep -Minutes 22
        echo "Starting DACPAC deployment..."
       sqlpackage /Action:Publish \
         /AccessToken:$sql_token \
@@ -230,6 +229,7 @@ steps:
         /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
         /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
       echo "DACPAC deployment completed."
+      Start-Sleep -Seconds 100
   continueOnError: true
 - task: PowerShell@2
   displayName: Stop TCP dump after Application/SQL deployment task
@@ -241,7 +241,6 @@ steps:
       Write-Host "Stopping TCP dump..."
       netsh trace stop
       Write-Host "Trace stopped."
-
 
 - task: PublishBuildArtifacts@1
   displayName: Upload TCP dump as artifact
