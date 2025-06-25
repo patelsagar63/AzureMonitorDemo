@@ -214,7 +214,7 @@ steps:
       # $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
       # $traceCommand = "netsh trace start capture=yes tracefile="" maxSize=512"
       #Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
-      Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `"netsh trace start capture=yes tracefile='$(System.DefaultWorkingDirectory)\vmss.etl' maxSize=512`"" -WindowStyle Hidden
+      Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `"netsh trace start capture=yes tracefile='$(System.DefaultWorkingDirectory)\vmss.etl' maxSize=512`""
       Write-Host "Trace started in background. It will continue running independently."
 - task: PowerShell@2
   displayName: Hello World
