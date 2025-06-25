@@ -223,12 +223,12 @@ steps:
     script: |
       Write-Host "Hello World"
        echo "Starting DACPAC deployment..."
-      sqlpackage /Action:Publish \
-        /AccessToken:$sql_token \
-        /SourceFile:"$(System.DefaultWorkingDirectory)/your.dacpac" \
-        /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
-        /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
-      echo "DACPAC deployment completed."
+      # sqlpackage /Action:Publish \
+      #   /AccessToken:$sql_token \
+      #   /SourceFile:"$(System.DefaultWorkingDirectory)/your.dacpac" \
+      #   /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
+      #   /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
+      # echo "DACPAC deployment completed."
       sleep 100
   continueOnError: true
 - task: PowerShell@2
