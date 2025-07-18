@@ -181,7 +181,7 @@ pool:
       
 #       # Import the VMSS
 #       terraform import azurerm_virtual_machine_scale_set.example /subscriptions/7f57655a-cc45-499d-bcc5-673c62b0f89f/resourceGroups/AzureMonitorDemo/providers/Microsoft.Compute/virtualMachineScaleSets/Cx-Test
-steps:
+#steps:
 # - task: Bash@3
 #   displayName: Capture TCP dump from VMSS instance
 #   inputs:
@@ -197,56 +197,73 @@ steps:
 #     PathtoPublish: 'vmss_to_databricks.pcap'
 #     ArtifactName: 'TcpDumpLogs'
 
-- task: PowerShell@2
-  displayName: Capture TCP dump from VMSS instance
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write-Host "Capturing TCP dump from this VMSS instance..."
-      # $timestamp = Get-Date -Format "yyyyMMddHHmmss"
-      # $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
-      # netsh trace start capture=yes tracefile=$outputPath maxSize=512
-      # Start-Sleep -Seconds 300
-      # netsh trace stop
-      # Write-Host "TCP dump completed and saved as $outputPath"
-      Write-Host "Starting TCP dump in background using netsh trace..."
-      # $tracePath = "$(System.DefaultWorkingDirectory)\vmss.etl"
-      # $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
-      # $traceCommand = "netsh trace start capture=yes tracefile="" maxSize=512"
-      #Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
-      Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `"netsh trace start capture=yes tracefile='$(System.DefaultWorkingDirectory)\vmss.etl' maxSize=512`""
-      Write-Host "Trace started in background. It will continue running independently."
-- task: PowerShell@2
-  displayName: Hello World
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "Hello World"
-       echo "Starting DACPAC deployment..."
-      # sqlpackage /Action:Publish \
-      #   /AccessToken:$sql_token \
-      #   /SourceFile:"$(System.DefaultWorkingDirectory)/your.dacpac" \
-      #   /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
-      #   /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
-      # echo "DACPAC deployment completed."
-      sleep 100
-  continueOnError: true
-- task: PowerShell@2
-  displayName: Stop TCP dump after Application/SQL deployment task
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "Waiting for 5 minutes before stopping trace..."
-      Start-Sleep -Seconds 5
-      Write-Host "Stopping TCP dump..."
-      netsh trace stop
-      Write-Host "Trace stopped."
+# - task: PowerShell@2
+#   displayName: Capture TCP dump from VMSS instance
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Write-Host "Capturing TCP dump from this VMSS instance..."
+#       # $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+#       # $outputPath = "$(System.DefaultWorkingDirectory)\vmss_to_databricks_$timestamp.etl"
+#       # netsh trace start capture=yes tracefile=$outputPath maxSize=512
+#       # Start-Sleep -Seconds 300
+#       # netsh trace stop
+#       # Write-Host "TCP dump completed and saved as $outputPath"
+#       Write-Host "Starting TCP dump in background using netsh trace..."
+#       # $tracePath = "$(System.DefaultWorkingDirectory)\vmss.etl"
+#       # $traceCommand = "netsh trace start capture=yes tracefile=`"$tracePath`" maxSize=512"
+#       # $traceCommand = "netsh trace start capture=yes tracefile="" maxSize=512"
+#       #Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `$ErrorActionPreference='Stop'; $traceCommand" -WindowStyle Hidden
+#       Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `"netsh trace start capture=yes tracefile='$(System.DefaultWorkingDirectory)\vmss.etl' maxSize=512`""
+#       Write-Host "Trace started in background. It will continue running independently."
+# - task: PowerShell@2
+#   displayName: Hello World
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       Write-Host "Hello World"
+#        echo "Starting DACPAC deployment..."
+#       # sqlpackage /Action:Publish \
+#       #   /AccessToken:$sql_token \
+#       #   /SourceFile:"$(System.DefaultWorkingDirectory)/your.dacpac" \
+#       #   /TargetConnectionString:"Server=tcp:<your-sql-server>.database.windows.net,1433;Initial Catalog=<your-db>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
+#       #   /p:CommandTimeout=120 || echo "⚠️ DACPAC deployment failed"
+#       # echo "DACPAC deployment completed."
+#       sleep 100
+#   continueOnError: true
+# - task: PowerShell@2
+#   displayName: Stop TCP dump after Application/SQL deployment task
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       Write-Host "Waiting for 5 minutes before stopping trace..."
+#       Start-Sleep -Seconds 5
+#       Write-Host "Stopping TCP dump..."
+#       netsh trace stop
+#       Write-Host "Trace stopped."
 
-- task: PublishBuildArtifacts@1
-  displayName: Upload TCP dump as artifact
+# - task: PublishBuildArtifacts@1
+#   displayName: Upload TCP dump as artifact
+#   inputs:
+#     PathtoPublish: '$(System.DefaultWorkingDirectory)\vmss.etl'
+#     ArtifactName: 'TcpDumpLogs'
+
+steps:
+- task: AzurePowerShell@5
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\vmss.etl'
-    ArtifactName: 'TcpDumpLogs'
-
-
+    azureSubscription: 'MCAP-sagpatel'
+    ScriptType: 'InlineScript'
+    Inline: |
+      Write-Host "Starting long-running authenticated task..."
+      $startTime = Get-Date
+      while ((Get-Date) - $startTime).TotalMinutes -lt 65) {
+        # Simulate a lightweight authenticated call
+        Get-AzResourceGroup | Out-Null
+        Start-Sleep -Seconds 60
+        Write-Host "Still running at $(Get-Date)"
+      }
+      Write-Host "Completed simulated long-running task."
+    azurePowerShellVersion: 'LatestVersion'
+    pwsh: true
+  timeoutInMinutes: 70
 
