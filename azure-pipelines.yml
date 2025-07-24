@@ -7,9 +7,6 @@
 
 pool:
   name: SelfHostedLabPool
-  demands:
-    - agent.name -equals 'windows-agent-01'
- 
   #environment: 'Approval'
 
 
@@ -272,5 +269,5 @@ steps:
       }
       Write-Host "Completed simulated long-running task."
     azurePowerShellVersion: 'LatestVersion'
-    pwsh: true
+    #pwsh: true
   timeoutInMinutes: 70
