@@ -7,7 +7,9 @@
 
 pool:
   name: SelfHostedLabPool
-  vmImage: Windows_NT
+  demands:
+    - agent.name -equals windows-agent-01
+ 
   #environment: 'Approval'
 
 
