@@ -6,7 +6,7 @@
   #     - main
 
 pool:
-  vmImage: windows-latest
+  name: SelfHostedLabPool
   #environment: 'Approval'
 
 
@@ -251,7 +251,7 @@ pool:
 steps:
 - task: AzurePowerShell@5
   inputs:
-    azureSubscription: 'MCAP-sagpatel'
+    azureSubscription: 'LabKeyVaultConnection'
     ScriptType: 'InlineScript'
     Inline: |
       Write-Host "Starting long-running authenticated task..."
