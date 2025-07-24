@@ -8,7 +8,7 @@
 pool:
   name: SelfHostedLabPool
   demands:
-    - agent.name -equals windows-agent-01
+    - agent.name -equals 'windows-agent-01'
  
   #environment: 'Approval'
 
