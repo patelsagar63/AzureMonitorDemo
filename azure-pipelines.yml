@@ -7,6 +7,9 @@
 
 pool:
   name: SelfHostedLabPool
+  demands:
+    - Agent.OS -equals Windows
+
   #environment: 'Approval'
 
 
