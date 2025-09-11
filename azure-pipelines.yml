@@ -5,10 +5,7 @@
   #   include:
   #     - main
 
-pool:
-  name: SelfHostedLabPool
-  demands:
-    - Agent.OS -equals Windows
+pool: windows-latest
 
   #environment: 'Approval'
 
