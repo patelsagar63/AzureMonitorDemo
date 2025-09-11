@@ -5,7 +5,8 @@
   #   include:
   #     - main
 
-pool: windows-latest
+pool: 
+ vmImage: windows-latest
 
   #environment: 'Approval'
 
