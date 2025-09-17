@@ -6,7 +6,7 @@
   #     - main
 
 pool: 
- vmImage: windows-latest
+ vmImage: ubuntu-latest
 
   #environment: 'Approval'
 
