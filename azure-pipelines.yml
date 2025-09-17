@@ -273,7 +273,7 @@ steps:
 #     #pwsh: true
 #   timeoutInMinutes: 70
 
-- task: HttpCheck@1
+- task: NetworkPreflight.HttpCheck@1
   displayName: 'HTTP(S) Connectivity Test'
   inputs:
     targets: |
