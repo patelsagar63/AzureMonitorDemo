@@ -274,6 +274,13 @@ steps:
 #   timeoutInMinutes: 70
 
 - task: HttpCheck@1
+  displayName: 'HTTP(S) Connectivity Test'
   inputs:
-    targets: 'https://learn.microsoft.com/en-us/'
-    method: 'GET'
+    targets: |
+      https://www.microsoft.com
+      https://login.microsoftonline.com/.well-known/openid-configuration
+    method: HEAD
+    timeoutSeconds: 10
+    retries: 1
+    expectStatus: 200-399
+    maxLatencyMs: 2000
