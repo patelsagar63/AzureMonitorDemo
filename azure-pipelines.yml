@@ -250,25 +250,30 @@ pool:
 #     ArtifactName: 'TcpDumpLogs'
 
 steps:
-- task: AzurePowerShell@5
+# - task: AzurePowerShell@5
+#   inputs:
+#     azureSubscription: 'LabKeyVaultConnection'
+#     ScriptType: 'InlineScript'
+#     Inline: |
+#       Write-Host "Starting long-running authenticated task..."
+#       $startTime = Get-Date
+#       while (((Get-Date) - $startTime).TotalMinutes -lt 65) {
+#         try {
+#           # Simulate an authenticated Azure call
+#           Get-AzContext | Out-Null
+#           Write-Host "Authenticated call succeeded at $(Get-Date)"
+#         } catch {
+#           Write-Host "Authentication failed or token expired at $(Get-Date)"
+#           Write-Host $_.Exception.Message
+#         }
+#         Start-Sleep -Seconds 60
+#       }
+#       Write-Host "Completed simulated long-running task."
+#     azurePowerShellVersion: 'LatestVersion'
+#     #pwsh: true
+#   timeoutInMinutes: 70
+
+- task: HttpCheck@1
   inputs:
-    azureSubscription: 'LabKeyVaultConnection'
-    ScriptType: 'InlineScript'
-    Inline: |
-      Write-Host "Starting long-running authenticated task..."
-      $startTime = Get-Date
-      while (((Get-Date) - $startTime).TotalMinutes -lt 65) {
-        try {
-          # Simulate an authenticated Azure call
-          Get-AzContext | Out-Null
-          Write-Host "Authenticated call succeeded at $(Get-Date)"
-        } catch {
-          Write-Host "Authentication failed or token expired at $(Get-Date)"
-          Write-Host $_.Exception.Message
-        }
-        Start-Sleep -Seconds 60
-      }
-      Write-Host "Completed simulated long-running task."
-    azurePowerShellVersion: 'LatestVersion'
-    #pwsh: true
-  timeoutInMinutes: 70
+    targets: 'https://learn.microsoft.com/en-us/'
+    method: 'GET'
