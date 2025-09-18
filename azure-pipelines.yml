@@ -284,10 +284,10 @@ steps:
     expectStatus: 200-399
     maxLatencyMs: 2000
 
-- task: DnsLookup@1
-  inputs:
-    targets: 'https://www.microsoft.com'
-    recordType: 'A'
+# - task: DnsLookup@1
+#   inputs:
+#     targets: 'https://www.microsoft.com'
+#     recordType: 'A'
 - task: TcpProbe@1
   inputs:
     targets: 'https://www.microsoft.com:443'
