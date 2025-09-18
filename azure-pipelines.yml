@@ -274,23 +274,25 @@ steps:
 #   timeoutInMinutes: 70
 
 - task: HttpCheck@1
-  displayName: 'HTTP(S) Connectivity Test'
   inputs:
     targets: |
-      https://www.microsoft.com
+       https://contoso.com/health
+       https://learn.microsoft.com
     method: HEAD
     timeoutSeconds: 10
-    retries: 1
     expectStatus: 200-399
-    maxLatencyMs: 2000
 
 - task: DnsLookup@1
   inputs:
-    targets: 'bing.com'
-    recordType: 'NS'
+    targets: |
+     contoso.com
+    recordType: A
+
 - task: TcpProbe@1
   inputs:
-    targets: 'www.microsoft.com:443'
+    targets: |
+      contoso.com/health:443
     useTls: true
+
 
   
