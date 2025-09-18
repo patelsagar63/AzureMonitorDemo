@@ -286,11 +286,11 @@ steps:
 
 - task: DnsLookup@1
   inputs:
-    targets: 'microsoft.com'
+    targets: 'https://www.microsoft.com'
     recordType: 'A'
 - task: TcpProbe@1
   inputs:
-    targets: 'contoso.com:443'
+    targets: 'https://www.microsoft.com:443'
     useTls: true
 
   
