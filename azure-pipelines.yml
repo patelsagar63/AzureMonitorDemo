@@ -290,7 +290,7 @@ steps:
 #     recordType: 'A'
 - task: TcpProbe@1
   inputs:
-    targets: 'https://www.microsoft.com:443'
+    targets: 'www.microsoft.com:443'
     useTls: true
 
   
