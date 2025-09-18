@@ -273,26 +273,25 @@ steps:
 #     #pwsh: true
 #   timeoutInMinutes: 70
 
-- task: HttpCheck@1
-  inputs:
-    targets: |
-       https://contoso.com/health
-       https://learn.microsoft.com
-    method: HEAD
-    timeoutSeconds: 10
-    expectStatus: 200-399
+  - task: HttpCheck@1
+    inputs:
+      targets: |
+        https://contoso.com/health
+        https://learn.microsoft.com
+      method: HEAD
+      timeoutSeconds: 10
+      expectStatus: 200-399
 
-# - task: DnsLookup@1
-#   inputs:
-#     targets: |
-#      contoso.com
-#     recordType: A
+  # - task: DnsLookup@1
+  #   inputs:
+  #     targets: |
+  #       contoso.com
+  #     recordType: A
 
-- task: TcpProbe@1
-  inputs:
-    targets: |
-      contoso.com/health:443
-    useTls: true
-
+  - task: TcpProbe@1
+    inputs:
+      targets: |
+        contoso.com:443
+      useTls: true
 
   
