@@ -278,7 +278,6 @@ steps:
   inputs:
     targets: |
       https://www.microsoft.com
-      https://login.microsoftonline.com/.well-known/openid-configuration
     method: HEAD
     timeoutSeconds: 10
     retries: 1
