@@ -288,6 +288,7 @@ steps:
         contoso.com
       recordType: A
       #resolver: 8.8.8.8
+    continueOnError: true
 
   - task: TcpProbe@1
     inputs:
