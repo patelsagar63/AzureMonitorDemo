@@ -286,7 +286,9 @@ steps:
     inputs:
       targets: |
         contoso.com
-      recordType: A
+      recordType: |
+        A 
+        CNAME
       #resolver: 8.8.8.8
     continueOnError: true
 
