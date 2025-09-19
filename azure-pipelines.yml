@@ -282,11 +282,11 @@ steps:
       timeoutSeconds: 10
       expectStatus: 200-399
 
-  # - task: DnsLookup@1
-  #   inputs:
-  #     targets: |
-  #       contoso.com
-  #     recordType: A
+  - task: DnsLookup@1
+    inputs:
+      targets: |
+        contoso.com
+      recordType: A
 
   - task: TcpProbe@1
     inputs:
