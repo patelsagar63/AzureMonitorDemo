@@ -273,27 +273,38 @@ steps:
 #     #pwsh: true
 #   timeoutInMinutes: 70
 
-  - task: HttpCheck@1
-    inputs:
-      targets: |
-        https://contoso.com/health
-        https://learn.microsoft.com
-      method: HEAD
-      timeoutSeconds: 10
-      expectStatus: 200-399
+  # - task: HttpCheck@1
+  #   inputs:
+  #     targets: |
+  #       https://contoso.com/health
+  #       https://learn.microsoft.com
+  #     method: HEAD
+  #     timeoutSeconds: 10
+  #     expectStatus: 200-399
 
-  - task: DnsLookup@1
-    inputs:
-      targets: |
-        contoso.com
-      recordType: A
-      #resolver: 8.8.8.8
-    continueOnError: true
+  # - task: DnsLookup@1
+  #   inputs:
+  #     targets: |
+  #       contoso.com
+  #     recordType: A
+  #     #resolver: 8.8.8.8
+  #   continueOnError: true
 
-  - task: TcpProbe@1
-    inputs:
-      targets: |
-        contoso.com:443
-      useTls: true
+  # - task: TcpProbe@1
+  #   inputs:
+  #     targets: |
+  #       contoso.com:443
+  #     useTls: true
 
-  
+  - task: PowerShellOnTargetMachines@3
+    inputs:
+      Machines: '52.151.13.144'    # Target Machine - Azure VM IP
+      UserName: 'azureuser'                 # local admin on the VM
+      UserPassword: 'Welcome@2025@1289'         
+      CommunicationProtocol: 'Https'
+      Port: '5986'
+      TestCertificate: true                 # skip CA/CN checks for self-signed certs
+      InlineScript: |
+        whoami
+        hostname
+        $PSVersionTable
