@@ -276,7 +276,7 @@ steps:
   - task: HttpCheck@1
     inputs:
       targets: |
-        https://contoso.com/health
+        https://contoso.com/health/bac
         https://learn.microsoft.com
       method: HEAD
       timeoutSeconds: 10
@@ -285,7 +285,7 @@ steps:
   - task: DnsLookup@1
     inputs:
       targets: |
-        contoso.com
+        contoso.com/abc
       recordType: A
       #resolver: 8.8.8.8
     continueOnError: true
