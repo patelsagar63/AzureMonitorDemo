@@ -273,28 +273,28 @@ steps:
 #     #pwsh: true
 #   timeoutInMinutes: 70
 
-  - task: HttpCheck@1
-    inputs:
-      targets: |
-        https://conto.com/health/bac
-        https://learn.microsoft.com
-      method: HEAD
-      timeoutSeconds: 10
-      expectStatus: 200-399
+  # - task: HttpCheck@1
+  #   inputs:
+  #     targets: |
+  #       https://conto.com/health/bac
+  #       https://learn.microsoft.com
+  #     method: HEAD
+  #     timeoutSeconds: 10
+  #     expectStatus: 200-399
 
-  - task: DnsLookup@1
-    inputs:
-      targets: |
-        contoso.com/abc
-      recordType: A
-      #resolver: 8.8.8.8
-    continueOnError: true
+  # - task: DnsLookup@1
+  #   inputs:
+  #     targets: |
+  #       contoso.com/abc
+  #     recordType: A
+  #     #resolver: 8.8.8.8
+  #   continueOnError: true
 
-  - task: TcpProbe@1
-    inputs:
-      targets: |
-        contoso.com:443
-      useTls: true
+  # - task: TcpProbe@1
+  #   inputs:
+  #     targets: |
+  #       contoso.com:443
+  #     useTls: true
 
   # - task: PowerShellOnTargetMachines@3
   #   inputs:
@@ -308,3 +308,9 @@ steps:
   #       whoami
   #       hostname
   #       $PSVersionTable
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Test'
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az version'
