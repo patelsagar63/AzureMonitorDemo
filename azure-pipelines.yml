@@ -6,7 +6,7 @@
   #     - main
 
 pool: 
- vmImage: windows-latest
+ vmImage: ubuntu-latest
 
   #environment: 'Approval'
 
@@ -296,18 +296,18 @@ steps:
   #       contoso.com:443
   #     useTls: true
 
-  - task: PowerShellOnTargetMachines@3
-    inputs:
-      Machines: '52.151.13.144'    # Target Machine - Azure VM IP
-      UserName: 'azureuser'                 # local admin on the VM
-      UserPassword: 'Welcome@2025@1289'         
-      CommunicationProtocol: 'Https'
-      Port: '5986'
-      TestCertificate: true                 # skip CA/CN checks for self-signed certs
-      InlineScript: |
-        whoami
-        hostname
-        $PSVersionTable
+  # - task: PowerShellOnTargetMachines@3
+  #   inputs:
+  #     Machines: '52.151.13.144'    # Target Machine - Azure VM IP
+  #     UserName: 'azureuser'                 # local admin on the VM
+  #     UserPassword: 'Welcome@2025@1289'         
+  #     CommunicationProtocol: 'Https'
+  #     Port: '5986'
+  #     TestCertificate: true                 # skip CA/CN checks for self-signed certs
+  #     InlineScript: |
+  #       whoami
+  #       hostname
+  #       $PSVersionTable
 
 # - task: AzureCLI@2
 #   inputs:
@@ -315,3 +315,12 @@ steps:
 #     scriptType: 'bash'
 #     scriptLocation: 'inlineScript'
 #     inlineScript: 'az version'
+
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      echo 'Hello world'
