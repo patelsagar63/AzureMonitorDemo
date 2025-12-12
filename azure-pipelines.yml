@@ -6,7 +6,7 @@
   #     - main
 
 pool: 
- vmImage: ubuntu-latest
+ name: ADO
 
   #environment: 'Approval'
 
