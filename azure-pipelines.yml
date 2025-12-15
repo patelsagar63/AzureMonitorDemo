@@ -1,5 +1,6 @@
 # trigger: none
 
+
    #batch: true
   # branches:
   #   include:
@@ -9,6 +10,7 @@ pool:
  name: ADO
 
   #environment: 'Approval'
+
 
 
 # steps:
@@ -316,7 +318,13 @@ steps:
 #     scriptLocation: 'inlineScript'
 #     inlineScript: 'az version'
 
-
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'MCAP-SagPatel'
+    KeyVaultName: 'lab-kv-1234'
+    SecretsFilter: '*'
+    RunAsPreJob: false
+    
 - task: Bash@3
   inputs:
     targetType: 'inline'
