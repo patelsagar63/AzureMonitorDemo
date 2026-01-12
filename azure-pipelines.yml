@@ -6,8 +6,17 @@
   #   include:
   #     - main
 
+# YAML file in the main branch
+schedules:
+  - cron: "*/1 * * * *"
+    displayName: "Every minute test run"
+    branches:
+      include:
+        - main
+    always: true
+
 pool: 
- name: ADO
+ vmImage: ubuntu-latest 
 
   #environment: 'Approval'
 
@@ -318,17 +327,16 @@ steps:
 #     scriptLocation: 'inlineScript'
 #     inlineScript: 'az version'
 
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'MCAP-SagPatel'
-    KeyVaultName: 'lab-kv-1234'
-    SecretsFilter: '*'
-    RunAsPreJob: false
+# - task: AzureKeyVault@2
+#   inputs:
+#     azureSubscription: 'MCAP-SagPatel'
+#     KeyVaultName: 'lab-kv-1234'
+#     SecretsFilter: '*'
+#     RunAsPreJob: false
     
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
       # Write your commands here
-      
       echo 'Hello world'
