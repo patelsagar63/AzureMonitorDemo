@@ -17,7 +17,8 @@ schedules:
 
 
 pool: 
- vmImage: ubuntu-latest 
+ name: Cx-Test-VMSS
+ #vmImage: ubuntu-latest 
 
   #environment: 'Approval'
 
@@ -341,3 +342,12 @@ steps:
     script: |
       # Write your commands here
       echo 'Hello world'
+
+- task: VSTest@3
+  inputs:
+    azureSubscription: 'Cx-Test'
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\bin\**\*test.dll
+      **\bin\**\*tests.dll
+    searchFolder: '$(System.DefaultWorkingDirectory)'
