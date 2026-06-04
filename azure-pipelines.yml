@@ -7,18 +7,26 @@
   #     - main
 
 # YAML file in the main branch
-schedules:
-- cron: "0 0 * * *"
-  displayName: Daily midnight build
+# schedules:
+# - cron: "0 0 * * *"
+#   displayName: Daily midnight build
+#   branches:
+#     include:
+#     - main
+#   always: true
+
+pr:
   branches:
     include:
     - main
-  always: true
-
-
+ 
+trigger:
+  branches:
+    include:
+    - main
+ 
 pool: 
- name: Cx-Test-VMSS
- #vmImage: ubuntu-latest 
+ vmImage: ubuntu-latest 
 
   #environment: 'Approval'
 
@@ -343,11 +351,11 @@ steps:
       # Write your commands here
       echo 'Hello world'
 
-- task: VSTest@3
-  inputs:
-    azureSubscription: 'Cx-Test'
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\bin\**\*test.dll
-      **\bin\**\*tests.dll
-    searchFolder: '$(System.DefaultWorkingDirectory)'
+# - task: VSTest@3
+#   inputs:
+#     azureSubscription: 'Cx-Test'
+#     testSelector: 'testAssemblies'
+#     testAssemblyVer2: |
+#       **\bin\**\*test.dll
+#       **\bin\**\*tests.dll
+#     searchFolder: '$(System.DefaultWorkingDirectory)'
