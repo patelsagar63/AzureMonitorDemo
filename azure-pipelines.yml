@@ -18,7 +18,7 @@ trigger:
     - main
   
 pool:
-    vmImage: ubuntu-latest
+    vmImage: windows-latest
 steps:
 - task: Bash@3
   inputs:
