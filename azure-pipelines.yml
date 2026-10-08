@@ -18,12 +18,209 @@ trigger:
     - main
   
 pool:
-    vmImage: windows-latest
+    vmImage: ubuntu-latest
 steps:
-- task: Bash@3
+- task: PowerShell@2
+  displayName: 'PowerShell TLS and HTTP Matrix Test'
+  condition: always()
+  continueOnError: true
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
-    targetType: 'inline'
+    targetType: inline
     script: |
-      # Write your commands here
-      echo 'Hello world'
- 
+      $ErrorActionPreference = 'Stop'
+
+      $testCount = 25
+
+      if ([string]::IsNullOrWhiteSpace($env:SYSTEM_ACCESSTOKEN)) {
+          throw 'System.AccessToken is unavailable.'
+      }
+
+      $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$($env:SYSTEM_TEAMPROJECTID)/_apis/build/builds/$($env:BUILD_BUILDID)/logs?api-version=7.1"
+
+      Write-Host "PowerShell=$($PSVersionTable.PSVersion)"
+      Write-Host "Runtime=$([System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription)"
+      Write-Host "OS=$([System.Runtime.InteropServices.RuntimeInformation]::OSDescription)"
+      Write-Host "TestCount=$testCount"
+
+      function Test-ProtocolCombination {
+          param(
+              [Parameter(Mandatory)]
+              [System.Security.Authentication.SslProtocols] $TlsProtocol,
+
+              [Parameter(Mandatory)]
+              [string] $TlsName,
+
+              [Parameter(Mandatory)]
+              [version] $HttpVersion,
+
+              [Parameter(Mandatory)]
+              [string] $HttpName
+          )
+
+          $successCount = 0
+          $resetCount = 0
+          $httpFailureCount = 0
+          $otherFailureCount = 0
+
+          $testName = "${TlsName}_${HttpName}"
+
+          Write-Host ''
+          Write-Host "=== Testing $testName ==="
+
+          1..$testCount | ForEach-Object {
+              $attempt = $_
+              $timer = [System.Diagnostics.Stopwatch]::StartNew()
+
+              $handler = [System.Net.Http.HttpClientHandler]::new()
+              $handler.SslProtocols = $TlsProtocol
+
+              $client = [System.Net.Http.HttpClient]::new($handler)
+              $client.Timeout = [TimeSpan]::FromSeconds(120)
+
+              $request = [System.Net.Http.HttpRequestMessage]::new(
+                  [System.Net.Http.HttpMethod]::Get,
+                  $url
+              )
+
+              $request.Version = $HttpVersion
+              $request.VersionPolicy =
+                  [System.Net.Http.HttpVersionPolicy]::RequestVersionExact
+
+              $request.Headers.Authorization =
+                  [System.Net.Http.Headers.AuthenticationHeaderValue]::new(
+                      'Bearer',
+                      $env:SYSTEM_ACCESSTOKEN
+                  )
+
+              $response = $null
+
+              try {
+                  $response = $client.SendAsync(
+                      $request,
+                      [System.Net.Http.HttpCompletionOption]::ResponseContentRead
+                  ).GetAwaiter().GetResult()
+
+                  $content = $response.Content.ReadAsByteArrayAsync().
+                      GetAwaiter().GetResult()
+
+                  $timer.Stop()
+
+                  Write-Host "TEST=$testName ATTEMPT=$attempt RESULT=HTTP_RESPONSE HTTP=$([int]$response.StatusCode) NEGOTIATED_HTTP=$($response.Version) BYTES=$($content.Length) DURATION_MS=$($timer.ElapsedMilliseconds)"
+
+                  if ($response.IsSuccessStatusCode) {
+                      $successCount++
+                  }
+                  else {
+                      $httpFailureCount++
+                  }
+              }
+              catch {
+                  $timer.Stop()
+
+                  $messages = [System.Collections.Generic.List[string]]::new()
+                  $exception = $_.Exception
+
+                  while ($null -ne $exception) {
+                      $messages.Add(
+                          "$($exception.GetType().FullName): $($exception.Message)"
+                      )
+                      $exception = $exception.InnerException
+                  }
+
+                  $messageText = $messages -join ' | '
+
+                  Write-Host "##[warning]TEST=$testName ATTEMPT=$attempt RESULT=EXCEPTION DURATION_MS=$($timer.ElapsedMilliseconds)"
+                  Write-Host "##[warning]$messageText"
+
+                  if (
+                      $messageText -match
+                      'reset by peer|connection reset|forcibly closed|transport connection'
+                  ) {
+                      $resetCount++
+                  }
+                  else {
+                      $otherFailureCount++
+                  }
+              }
+              finally {
+                  if ($null -ne $response) {
+                      $response.Dispose()
+                  }
+
+                  $request.Dispose()
+                  $client.Dispose()
+              }
+
+              Start-Sleep -Seconds 1
+          }
+
+          Write-Host "SUMMARY TEST=$testName SUCCESS=$successCount RESET=$resetCount HTTP_FAILURE=$httpFailureCount OTHER_FAILURE=$otherFailureCount"
+
+          [pscustomobject]@{
+              Test         = $testName
+              Success      = $successCount
+              Reset        = $resetCount
+              HttpFailure  = $httpFailureCount
+              OtherFailure = $otherFailureCount
+          }
+      }
+
+      $results = @()
+
+      $results += Test-ProtocolCombination `
+          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls12) `
+          -TlsName 'TLS12' `
+          -HttpVersion ([version]'1.1') `
+          -HttpName 'HTTP11'
+
+      $results += Test-ProtocolCombination `
+          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls13) `
+          -TlsName 'TLS13' `
+          -HttpVersion ([version]'1.1') `
+          -HttpName 'HTTP11'
+
+      $results += Test-ProtocolCombination `
+          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls12) `
+          -TlsName 'TLS12' `
+          -HttpVersion ([version]'2.0') `
+          -HttpName 'HTTP2'
+
+      $results += Test-ProtocolCombination `
+          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls13) `
+          -TlsName 'TLS13' `
+          -HttpVersion ([version]'2.0') `
+          -HttpName 'HTTP2'
+
+      Write-Host ''
+      Write-Host '=== Final results ==='
+
+      foreach ($result in $results) {
+          Write-Host "RESULT TEST=$($result.Test) SUCCESS=$($result.Success) RESET=$($result.Reset) HTTP_FAILURE=$($result.HttpFailure) OTHER_FAILURE=$($result.OtherFailure)"
+      }
+
+      $stableTests = @(
+          $results |
+              Where-Object {
+                  $_.Success -eq $testCount -and
+                  $_.Reset -eq 0 -and
+                  $_.HttpFailure -eq 0 -and
+                  $_.OtherFailure -eq 0
+              }
+      )
+
+      if (
+          $stableTests.Count -eq 1 -and
+          $stableTests[0].Test -eq 'TLS12_HTTP11'
+      ) {
+          Write-Host '##[warning]CONCLUSION=ONLY_TLS12_HTTP11_IS_STABLE'
+      }
+      elseif (
+          ($results | Measure-Object -Property Reset -Sum).Sum -eq 0
+      ) {
+          Write-Host 'CONCLUSION=NO_RESETS_REPRODUCED'
+      }
+      else {
+          Write-Host '##[warning]CONCLUSION=REVIEW_PROTOCOL_MATRIX'
+      }
