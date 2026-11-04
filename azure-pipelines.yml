@@ -18,7 +18,7 @@ trigger:
     - main
   
 pool:
-    vmImage: ubuntu-latest
+    name: ADO
 steps:
 - task: PowerShell@2
   displayName: 'PowerShell TLS and HTTP Matrix Test'
