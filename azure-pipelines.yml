@@ -1,226 +1,104 @@
-# resources:
-#   repositories:
-#   - repository: sre-pipeline
-#     type: git
-#     name: SRE.Builds
-#   - repository: srcDevRepo
-#     path: $(Build.SourcesDirectory)
-#     type: git
-#     name: ocp-cluster-observability
-pr:
-  branches:
-    include:
-    - main
- 
-trigger:
-  branches:
-    include:
-    - main
-  
-pool:
-    vmImage: macOS-latest
-steps:
-- task: PowerShell@2
-  displayName: 'PowerShell TLS and HTTP Matrix Test'
-  condition: always()
-  continueOnError: true
-  env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-  inputs:
-    targetType: inline
-    script: |
-      $ErrorActionPreference = 'Stop'
+trigger: none
+pr: none
 
-      $testCount = 25
+parameters:
+  - name: image
+    type: string
+    default: windows-2025
+    values:
+      - windows-2025
+      - windows-2022
+  - name: versionMode
+    type: string
+    default: OtherVersion
+    values:
+      - OtherVersion
+      - LatestVersion
+  - name: azVersion
+    type: string
+    default: '15.6.1'
+  - name: azureServiceConnection
+    type: string
+    default: ''
 
-      if ([string]::IsNullOrWhiteSpace($env:SYSTEM_ACCESSTOKEN)) {
-          throw 'System.AccessToken is unavailable.'
-      }
+variables:
+  system.debug: true
 
-      $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$($env:SYSTEM_TEAMPROJECTID)/_apis/build/builds/$($env:BUILD_BUILDID)/logs?api-version=7.1"
-
-      Write-Host "PowerShell=$($PSVersionTable.PSVersion)"
-      Write-Host "Runtime=$([System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription)"
-      Write-Host "OS=$([System.Runtime.InteropServices.RuntimeInformation]::OSDescription)"
-      Write-Host "TestCount=$testCount"
-
-      function Test-ProtocolCombination {
-          param(
-              [Parameter(Mandatory)]
-              [System.Security.Authentication.SslProtocols] $TlsProtocol,
-
-              [Parameter(Mandatory)]
-              [string] $TlsName,
-
-              [Parameter(Mandatory)]
-              [version] $HttpVersion,
-
-              [Parameter(Mandatory)]
-              [string] $HttpName
-          )
-
-          $successCount = 0
-          $resetCount = 0
-          $httpFailureCount = 0
-          $otherFailureCount = 0
-
-          $testName = "${TlsName}_${HttpName}"
-
-          Write-Host ''
-          Write-Host "=== Testing $testName ==="
-
-          1..$testCount | ForEach-Object {
-              $attempt = $_
-              $timer = [System.Diagnostics.Stopwatch]::StartNew()
-
-              $handler = [System.Net.Http.HttpClientHandler]::new()
-              $handler.SslProtocols = $TlsProtocol
-
-              $client = [System.Net.Http.HttpClient]::new($handler)
-              $client.Timeout = [TimeSpan]::FromSeconds(120)
-
-              $request = [System.Net.Http.HttpRequestMessage]::new(
-                  [System.Net.Http.HttpMethod]::Get,
-                  $url
-              )
-
-              $request.Version = $HttpVersion
-              $request.VersionPolicy =
-                  [System.Net.Http.HttpVersionPolicy]::RequestVersionExact
-
-              $request.Headers.Authorization =
-                  [System.Net.Http.Headers.AuthenticationHeaderValue]::new(
-                      'Bearer',
-                      $env:SYSTEM_ACCESSTOKEN
-                  )
-
-              $response = $null
-
-              try {
-                  $response = $client.SendAsync(
-                      $request,
-                      [System.Net.Http.HttpCompletionOption]::ResponseContentRead
-                  ).GetAwaiter().GetResult()
-
-                  $content = $response.Content.ReadAsByteArrayAsync().
-                      GetAwaiter().GetResult()
-
-                  $timer.Stop()
-
-                  Write-Host "TEST=$testName ATTEMPT=$attempt RESULT=HTTP_RESPONSE HTTP=$([int]$response.StatusCode) NEGOTIATED_HTTP=$($response.Version) BYTES=$($content.Length) DURATION_MS=$($timer.ElapsedMilliseconds)"
-
-                  if ($response.IsSuccessStatusCode) {
-                      $successCount++
-                  }
-                  else {
-                      $httpFailureCount++
-                  }
+jobs:
+  - job: InstalledBundle
+    displayName: Verify local Az bundle without Gallery access
+    timeoutInMinutes: 10
+    pool:
+      vmImage: ${{ parameters.image }}
+    steps:
+      - checkout: none
+      - task: PowerShell@2
+        displayName: Discover and import preinstalled Az
+        env:
+          REPRO_VERSION_MODE: ${{ parameters.versionMode }}
+          REPRO_AZ_VERSION: ${{ parameters.azVersion }}
+        inputs:
+          targetType: inline
+          pwsh: false
+          script: |
+            $ErrorActionPreference = 'Stop'
+            Write-Host "Image: $env:ImageOS $env:ImageVersion"
+            Write-Host "PowerShell: $($PSVersionTable.PSVersion)"
+            $root = 'C:\Modules'
+            if (-not (Test-Path -LiteralPath $root -PathType Container)) {
+              throw "Hosted module cache does not exist: $root"
+            }
+            $bundles = @(Get-ChildItem -LiteralPath $root | ForEach-Object {
+              if ($_.Name -match '^az_(\d+\.\d+\.\d+)(?:\.zip)?$') {
+                [pscustomobject]@{ Version = [version]$Matches[1]; Path = $_.FullName }
               }
-              catch {
-                  $timer.Stop()
+            })
+            $bundles | Format-Table -AutoSize | Out-Host
+            if ($env:REPRO_VERSION_MODE -eq 'LatestVersion') {
+              $selected = $bundles | Sort-Object Version -Descending | Select-Object -First 1
+            } else {
+              $requested = [version]$env:REPRO_AZ_VERSION
+              $selected = $bundles | Where-Object Version -eq $requested | Select-Object -First 1
+            }
+            if ($null -eq $selected) {
+              throw "Requested local Az bundle is unavailable. No Gallery download will be attempted."
+            }
+            $version = $selected.Version.ToString()
+            $bundlePath = Join-Path $root "az_$version"
+            if (-not (Test-Path -LiteralPath $bundlePath -PathType Container)) {
+              Write-Host "Expanding existing local bundle: $($selected.Path)"
+              Expand-Archive -LiteralPath $selected.Path -DestinationPath $root
+            }
+            $manifest = Join-Path $bundlePath "Az\$version\Az.psd1"
+            if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) {
+              throw "Local bundle is incomplete; required manifest is missing: $manifest"
+            }
+            $env:PSModulePath = $bundlePath + [IO.Path]::PathSeparator + $env:PSModulePath
+            Import-Module Az -RequiredVersion $version -ErrorAction Stop
+            $loaded = Get-Module Az
+            if ($null -eq $loaded -or $loaded.Version -ne $selected.Version) {
+              throw "Requested Az version was not imported."
+            }
+            $loaded | Select-Object Name, Version, ModuleBase | Format-List | Out-Host
+            Write-Host "PASS: Az $version imported from the local bundle. No Gallery download commands were executed."
 
-                  $messages = [System.Collections.Generic.List[string]]::new()
-                  $exception = $_.Exception
-
-                  while ($null -ne $exception) {
-                      $messages.Add(
-                          "$($exception.GetType().FullName): $($exception.Message)"
-                      )
-                      $exception = $exception.InnerException
-                  }
-
-                  $messageText = $messages -join ' | '
-
-                  Write-Host "##[warning]TEST=$testName ATTEMPT=$attempt RESULT=EXCEPTION DURATION_MS=$($timer.ElapsedMilliseconds)"
-                  Write-Host "##[warning]$messageText"
-
-                  if (
-                      $messageText -match
-                      'reset by peer|connection reset|forcibly closed|transport connection'
-                  ) {
-                      $resetCount++
-                  }
-                  else {
-                      $otherFailureCount++
-                  }
-              }
-              finally {
-                  if ($null -ne $response) {
-                      $response.Dispose()
-                  }
-
-                  $request.Dispose()
-                  $client.Dispose()
-              }
-
-              Start-Sleep -Seconds 1
-          }
-
-          Write-Host "SUMMARY TEST=$testName SUCCESS=$successCount RESET=$resetCount HTTP_FAILURE=$httpFailureCount OTHER_FAILURE=$otherFailureCount"
-
-          [pscustomobject]@{
-              Test         = $testName
-              Success      = $successCount
-              Reset        = $resetCount
-              HttpFailure  = $httpFailureCount
-              OtherFailure = $otherFailureCount
-          }
-      }
-
-      $results = @()
-
-      $results += Test-ProtocolCombination `
-          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls12) `
-          -TlsName 'TLS12' `
-          -HttpVersion ([version]'1.1') `
-          -HttpName 'HTTP11'
-
-      $results += Test-ProtocolCombination `
-          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls13) `
-          -TlsName 'TLS13' `
-          -HttpVersion ([version]'1.1') `
-          -HttpName 'HTTP11'
-
-      $results += Test-ProtocolCombination `
-          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls12) `
-          -TlsName 'TLS12' `
-          -HttpVersion ([version]'2.0') `
-          -HttpName 'HTTP2'
-
-      $results += Test-ProtocolCombination `
-          -TlsProtocol ([System.Security.Authentication.SslProtocols]::Tls13) `
-          -TlsName 'TLS13' `
-          -HttpVersion ([version]'2.0') `
-          -HttpName 'HTTP2'
-
-      Write-Host ''
-      Write-Host '=== Final results ==='
-
-      foreach ($result in $results) {
-          Write-Host "RESULT TEST=$($result.Test) SUCCESS=$($result.Success) RESET=$($result.Reset) HTTP_FAILURE=$($result.HttpFailure) OTHER_FAILURE=$($result.OtherFailure)"
-      }
-
-      $stableTests = @(
-          $results |
-              Where-Object {
-                  $_.Success -eq $testCount -and
-                  $_.Reset -eq 0 -and
-                  $_.HttpFailure -eq 0 -and
-                  $_.OtherFailure -eq 0
-              }
-      )
-
-      if (
-          $stableTests.Count -eq 1 -and
-          $stableTests[0].Test -eq 'TLS12_HTTP11'
-      ) {
-          Write-Host '##[warning]CONCLUSION=ONLY_TLS12_HTTP11_IS_STABLE'
-      }
-      elseif (
-          ($results | Measure-Object -Property Reset -Sum).Sum -eq 0
-      ) {
-          Write-Host 'CONCLUSION=NO_RESETS_REPRODUCED'
-      }
-      else {
-          Write-Host '##[warning]CONCLUSION=REVIEW_PROTOCOL_MATRIX'
-      }
+  # A separate job tests the real task on an unmodified hosted agent.
+  - ${{ if ne(parameters.azureServiceConnection, '') }}:
+      - job: AzurePowerShellTask
+        displayName: Test real Azure PowerShell initialization
+        timeoutInMinutes: 10
+        pool:
+          vmImage: ${{ parameters.image }}
+        steps:
+          - checkout: none
+          - task: AzurePowerShell@5
+            displayName: Initialize selected installed version without resource changes
+            inputs:
+              azureSubscription: ${{ parameters.azureServiceConnection }}
+              ScriptType: InlineScript
+              Inline: |
+                Write-Host 'Azure PowerShell initialization succeeded.'
+                Get-Module Az* | Select-Object Name, Version, ModuleBase
+              azurePowerShellVersion: ${{ parameters.versionMode }}
+              preferredAzurePowerShellVersion: ${{ parameters.azVersion }}
+              pwsh: false
